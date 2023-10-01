@@ -41,6 +41,7 @@ P.S. You can delete this when you're done too. It's your config now :)
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
+vim.keymap.set('n', '<C-n>', ':Neotree<CR>')
 vim.g.maplocalleader = ' '
 
 -- Install package manager
@@ -219,7 +220,7 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  -- { import = 'custom.plugins' },
+ { import = 'custom.plugins' },
 }, {})
 
 -- [[ Setting options ]]

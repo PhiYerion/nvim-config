@@ -19,6 +19,10 @@ Distribution Alternatives:
 - [LazyVim](https://www.lazyvim.org/): A delightful distribution maintained by @folke (the author of lazy.nvim, the package manager used here)
 
 ### Installation
+## Phi install:
+Install nvim-tree with your package manager
+
+## Back to base readme:
 
 > **NOTE** 
 > [Backup](#FAQ) your previous configuration (if any exists)
