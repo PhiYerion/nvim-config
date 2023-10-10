@@ -32,7 +32,7 @@ These are for you, the reader to help understand what is happening. Feel free to
 them once you know what you're doing, but they should serve as a guide for when you
 are first encountering a few different constructs in your nvim config.
 
-I hope you enjoy your Neovim journey,
+I hope you enjoy your Neovim journe
 - TJ
 
 P.S. You can delete this when you're done too. It's your config now :)
@@ -41,8 +41,12 @@ P.S. You can delete this when you're done too. It's your config now :)
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are required (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
-vim.keymap.set('n', '<C-n>', ':Neotree<CR>')
 vim.g.maplocalleader = ' '
+vim.keymap.set('n', '<leader>nt', ':Neotree<CR>', { desc = '[N]eotree[O]pen' })
+vim.keymap.set('n', '<leader>nc', ':Neotree close<CR>', { desc = '[N]eotree[C]lose' })
+
+
+vim.o.shell = "/bin/bash"
 
 -- Install package manager
 --    https://github.com/folke/lazy.nvim
@@ -77,23 +81,6 @@ require('lazy').setup({
 
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
-  {
-    -- LSP Configuration & Plugins
-    'neovim/nvim-lspconfig',
-    dependencies = {
-      -- Automatically install LSPs to stdpath for neovim
-      { 'williamboman/mason.nvim', config = true },
-      'williamboman/mason-lspconfig.nvim',
-
-      -- Useful status updates for LSP
-      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
-
-      -- Additional lua configuration, makes nvim stuff amazing!
-      'folke/neodev.nvim',
-    },
-  },
-
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -446,10 +433,10 @@ end
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
+  clangd = { filetypes = { 'c', 'cpp', 'c++', '.h', '.hpp'} },
+  gopls = { filetypes = { 'go' } },
+  rust_analyzer = { filetypes = {'rs', 'rust' } },
+  pyright = { filetypes = { 'py', 'python' } },
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
 
