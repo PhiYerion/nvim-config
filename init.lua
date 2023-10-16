@@ -43,8 +43,15 @@ P.S. You can delete this when you're done too. It's your config now :)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.wo.relativenumber = true
--- vim.keymap.set('n', '<leader>nt', ':Neotree<CR>', { desc = '[N]eotree[O]pen' })
--- vim.keymap.set('n', '<leader>nc', ':Neotree close<CR>', { desc = '[N]eotree[C]lose' })
+vim.keymap.set('n', '<leader>st', ':Telescope<CR>', { desc = '[S]earch [T]elescope for help. Has keymaps' })
+vim.keymap.set('n', '<leader>nf', ':Neotree float<CR>', { desc = '[N]eotree[O]pen' })
+vim.keymap.set('n', '<leader>nc', ':Neotree close<CR>', { desc = '[N]eotree[C]lose' })
+vim.keymap.set('n', "<leader>ft", ":FloatermNew --name=myfloat --height=0.8 --width=0.7 --autoclose=2 nu <CR> ",
+  { desc = 'create new terminal' })
+vim.keymap.set('n', "t", ":FloatermToggle myfloat<CR>", { desc = 'Toggle terminal' })
+vim.keymap.set('t', "<Esc>", "<C-\\><C-n>:q<CR>")
+
+
 require('opts')
 
 vim.o.shell = "/bin/bash"
@@ -71,6 +78,7 @@ vim.opt.rtp:prepend(lazypath)
 --  You can also configure plugins after the setup call,
 --    as they will be available in your neovim runtime.
 require('lazy').setup({
+  'neotree',
   -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
@@ -228,6 +236,8 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
+  { 'rust-lang/rust-analyzer' },
+  { 'nvim-lua/popup.nvim' },
   { import = 'kickstart.plugins' },
   { import = 'custom.plugins' },
 }, {})
@@ -340,7 +350,7 @@ require('nvim-treesitter.configs').setup {
   auto_install = true,
 
   highlight = { enable = true },
-  indent = { enable = true },
+  ident = { enable = true },
   incremental_selection = {
     enable = true,
     keymaps = {
@@ -482,7 +492,21 @@ end
 local servers = {
   clangd = { filetypes = { 'c', 'cpp', 'c++', '.h', '.hpp' } },
   gopls = { filetypes = { 'go' } },
-  rust_analyzer = { filetypes = { 'rs', 'rust' } },
+  rust_analyzer = {
+    filetypes = { 'rs', 'rust', 'toml' },
+    root_dir = require('lspconfig.util').root_pattern('Cargo.toml'),
+    settings = {
+      ['rust-analyzer'] = {
+        cargo = {
+          allFeatures = true,
+        },
+        checkOnSave = {
+          command = "clippy",
+        },
+      }
+    },
+    check = 'clippy',
+  },
   pyright = { filetypes = { 'py', 'python' } },
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
@@ -571,6 +595,7 @@ cmp.setup {
     { name = 'vsnip',                  keyword_length = 2 }, -- nvim-cmp source for vim-vsnip
     { name = 'calc' },                                       -- source for math calculation
     { name = 'luasnip' },
+    { name = 'buffer' },
   },
   window = {
     completion = cmp.config.window.bordered(),
@@ -594,18 +619,39 @@ cmp.setup {
 local rt = require("rust-tools")
 
 rt.setup({
+  tools = {
+    runnables = {
+      use_telescope = true,
+    },
+    inlay_hints = {
+      auto = true,
+      show_parameter_hints = true,
+    },
+  },
   server = {
-    on_attach = function(_, bufnr)
-      -- Hover actions
+    on_attach = function(client, bufnr)
+      -- set options
+      rt.inlay_hints.enable()
+      rt.hover_range.hover_range()
+
+      -- keybinds
       vim.keymap.set("n", "<leader>rh", rt.hover_actions.hover_actions,
-        { buffer = bufnr, desc = 'Hover actions for rust using rust tools' })
+        { desc = 'Hover actions for rust using rust tools' })
       -- Code action groups
       vim.keymap.set("n", "<Leader>ra", rt.code_action_group.code_action_group,
-        { buffer = bufnr, desc = 'code action group / lsp actions / rust actions' })
-      vim.keymap.set("n", "<leader>rd", ':ResutDebuggables<CR>', { buffer = bufnr, desc = 'Debug rust code' })
-      vim.keymap.set("n", "<leader>re", ':RustExpandMacro<CR>', { buffer = bufnr, desc = 'Expand rust macro' })
+        { desc = 'code action group / lsp actions / rust actions' })
+      vim.keymap.set("n", "<leader>rd", ':ResutDebuggables<CR>', { desc = 'Debug rust code' })
+      vim.keymap.set("n", "<leader>re", ':RustExpandMacro<CR>', { desc = 'Expand rust macro' })
     end,
   },
+  settings = {
+    ['rust-analyzer'] = {
+      checkOnSave = {
+        command = 'clippy',
+      },
+    },
+  }
 })
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
