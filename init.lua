@@ -238,9 +238,15 @@ require('lazy').setup({
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   { 'rust-lang/rust-analyzer' },
   { 'nvim-lua/popup.nvim' },
+  { 'navarasu/onedark.nvim' },
   { import = 'kickstart.plugins' },
   { import = 'custom.plugins' },
 }, {})
+
+require('onedark').setup {
+  style = 'darker'
+}
+require('onedark').load()
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -494,18 +500,14 @@ local servers = {
   gopls = { filetypes = { 'go' } },
   rust_analyzer = {
     filetypes = { 'rs', 'rust', 'toml' },
-    root_dir = require('lspconfig.util').root_pattern('Cargo.toml'),
-    settings = {
-      ['rust-analyzer'] = {
-        cargo = {
-          allFeatures = true,
-        },
-        checkOnSave = {
-          command = "clippy",
-        },
-      }
-    },
-    check = 'clippy',
+    --root_dir = require('lspconfig.util').root_pattern('Cargo.toml'),
+    --cargo = {
+    --  allFeatures = true,
+    --},
+    --checkOnSave = {
+    --  command = "clippy",
+    --},
+    --check = 'clippy',
   },
   pyright = { filetypes = { 'py', 'python' } },
   -- tsserver = {},
@@ -632,7 +634,6 @@ rt.setup({
     on_attach = function(client, bufnr)
       -- set options
       rt.inlay_hints.enable()
-      rt.hover_range.hover_range()
 
       -- keybinds
       vim.keymap.set("n", "<leader>rh", rt.hover_actions.hover_actions,
