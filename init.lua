@@ -192,7 +192,7 @@ require('lazy').setup({
 
 
   -- "gc" to comment visual regions/lines
-  { 'numToStr/Comment.nvim',     opts = {} },
+  { 'numToStr/Comment.nvim', opts = {} },
 
   -- Fuzzy Finder (files, lsp, etc)
   {
@@ -236,15 +236,36 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  { 'rust-lang/rust-analyzer' },
   { 'nvim-lua/popup.nvim' },
   { 'navarasu/onedark.nvim' },
+  {
+    'kylechui/nvim-surround',
+    tag = "main",
+    config = function()
+      require('nvim-surround').setup()
+    end,
+  },
+  {
+    'm4xshen/autoclose.nvim',
+    config = function()
+      require('autoclose').setup()
+    end,
+  },
+  {
+    'f-person/git-blame.nvim',
+    config = function()
+      require('gitblame').setup()
+      vim.g.gitblame_use_blame_commit_file_urls = true
+      vim.keymap.set('n', "<leader>gbt", ":GitBlameToggle<CR>", { desc = 'Toggle git blame' })
+      vim.keymap.set('n', "<leader>gbt", ":GitBlameOpenCommitURL<CR>", { desc = 'Open git blame comment' })
+    end,
+  },
   { import = 'kickstart.plugins' },
   { import = 'custom.plugins' },
 }, {})
 
 require('onedark').setup {
-  style = 'darker'
+  style = 'deep'
 }
 require('onedark').load()
 
@@ -498,17 +519,6 @@ end
 local servers = {
   clangd = { filetypes = { 'c', 'cpp', 'c++', '.h', '.hpp' } },
   gopls = { filetypes = { 'go' } },
-  rust_analyzer = {
-    filetypes = { 'rs', 'rust', 'toml' },
-    --root_dir = require('lspconfig.util').root_pattern('Cargo.toml'),
-    --cargo = {
-    --  allFeatures = true,
-    --},
-    --checkOnSave = {
-    --  command = "clippy",
-    --},
-    --check = 'clippy',
-  },
   pyright = { filetypes = { 'py', 'python' } },
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
@@ -653,6 +663,8 @@ rt.setup({
     },
   }
 })
+
+
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
