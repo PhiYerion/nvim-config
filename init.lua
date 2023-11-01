@@ -21,7 +21,6 @@ Kickstart.nvim is a template for your own configuration.
   And then you can explore or search through `:help lua-guide`
   - https://neovim.io/doc/user/lua-guide.html
 
-
 Kickstart Guide:
 
 I have left several `:help X` comments throughout the init.lua
@@ -258,6 +257,20 @@ require('lazy').setup({
       vim.g.gitblame_use_blame_commit_file_urls = true
       vim.keymap.set('n', "<leader>gbt", ":GitBlameToggle<CR>", { desc = 'Toggle git blame' })
       vim.keymap.set('n', "<leader>gbt", ":GitBlameOpenCommitURL<CR>", { desc = 'Open git blame comment' })
+    end,
+  },
+  {
+    "ggandor/leap.nvim",
+    config = function()
+      local leap = require('leap')
+      leap.add_default_mappings()
+    end,
+  },
+  {
+    'github/copilot.vim',
+    config = function()
+      vim.g.copilot_no_tab_map = true
+      vim.api.nvim_set_keymap("i", "<C-J>", 'copilot#Accept("<CR>")', { silent = true, expr = true })
     end,
   },
   { import = 'kickstart.plugins' },
@@ -660,8 +673,11 @@ rt.setup({
       checkOnSave = {
         command = 'clippy',
       },
+      rustfmt = {
+        overrideCommand = { "leptosfmt", "--stdin", "--rustfmt" }
+      },
     },
-  }
+  },
 })
 
 
